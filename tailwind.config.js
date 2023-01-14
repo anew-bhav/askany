@@ -4,5 +4,11 @@ module.exports = {
     './app/helpers/**/*.rb',
     './app/assets/stylesheets/**/*.css',
     './app/javascript/**/*.{js,jsx}'
-  ]
+  ],
+  theme: {
+    fontFamily: {
+      'serif': ['Inter', 'sans-serif'],
+      'mono': ['"Martian Mono"', 'mono']
+    }
+  }
 }
