@@ -71,3 +71,10 @@ end
 
 
 
+
+gem "ruby-openai", "~> 3.0"
+
+gem "pdf-reader", "~> 2.11"
+
+
+gem "pycall", "~> 1.4"
