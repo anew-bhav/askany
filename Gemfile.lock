@@ -117,6 +117,7 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.2)
+    matrix (0.4.2)
     method_source (1.0.0)
     mini_mime (1.1.2)
     minitest (5.17.0)
@@ -223,6 +224,7 @@ DEPENDENCIES
   hotwire-livereload (~> 1.2)
   jbuilder
   jsbundling-rails
+  matrix (~> 0.4.2)
   pdf-reader (~> 2.11)
   pg (~> 1.1)
   puma (~> 5.0)

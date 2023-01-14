@@ -78,3 +78,5 @@ gem "pdf-reader", "~> 2.11"
 
 
 gem "pycall", "~> 1.4"
+
+gem "matrix", "~> 0.4.2"
