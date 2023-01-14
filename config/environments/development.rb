@@ -58,6 +58,7 @@ Rails.application.configure do
 
   # Suppress logger output for asset requests.
   config.assets.quiet = true
+  config.hotwire_livereload.listen_paths << Rails.root.join('app/assets/builds')
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
