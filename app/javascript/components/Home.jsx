@@ -104,12 +104,12 @@ const Home = () => {
             <button
               onClick={handleQuestionSubmit}
               disabled={query.length === 0}
-              className="bg-black hover:ring-2 hover:ring-stone-400 disabled:bg-gray-600 disabled:text-gray-100 disabled:shadow-none basis-1/2 w-full sm:w-auto text-sm sm:text-md shadow-lg rounded-lg text-white px-4 py-2 font-bold"
+              className="bg-black hover:ring-2 hover:ring-stone-400 disabled:hover:ring-0 disabled:bg-gray-600 disabled:text-gray-100 disabled:shadow-none basis-1/2 w-full sm:w-auto text-sm sm:text-md shadow-lg rounded-lg text-white px-4 py-2 font-bold"
             >
               Ask question
             </button>
             <button
-              className="bg-gray-100 hover:ring-2 hover:ring-stone-300 disabled:bg-gray-300 disabled:text-gray-100 disabled:shadow-none basis-1/2 w-full sm:w-auto text-sm sm:text-md shadow-lg rounded-lg px-4 py-2 font-bold"
+              className="bg-gray-100 hover:ring-2 hover:ring-stone-300 disabled:hover:ring-0 disabled:bg-gray-300 disabled:text-gray-100 disabled:shadow-none basis-1/2 w-full sm:w-auto text-sm sm:text-md shadow-lg rounded-lg px-4 py-2 font-bold"
               onClick={handleTopQuestion}
               disabled={topQuestions.isLoading}
             >
