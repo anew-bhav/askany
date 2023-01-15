@@ -84,4 +84,4 @@ test:
 #
 production:
   <<: *default
-  database: askmybook_production
+  database: <%= ENV["DATABASE_NAME"] %>

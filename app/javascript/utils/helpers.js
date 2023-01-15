@@ -2,7 +2,7 @@ const randomElementFrom = (array) => {
   if (
     array === null ||
     array === undefined ||
-    typeof array === 'Object' ||
+    typeof array === 'object' ||
     array.length === 0
   ) {
     return null
