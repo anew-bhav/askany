@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useMutation } from 'react-query'
 import Answer from './Answer'
 import loadingGifs from '../loadingGifs.json'
+import { randomElementFrom } from '../utils/helpers'
 
 const Home = () => {
   const [query, setQuery] = useState('What is the book Animal Farm about?')
@@ -103,10 +104,10 @@ const Home = () => {
             <img
               alt="Loading"
               className="w-auto h-32 bg-transparent rounded"
-              src={loadingGifs[Math.floor(Math.random() * loadingGifs.length)]}
+              src={randomElementFrom(loadingGifs)}
             />
             <p className="font-serif font-bold text-base">
-              {loadingText[Math.floor(Math.random() * loadingText.length)]}
+              {randomElementFrom(loadingText)}
             </p>
           </div>
         ) : (
