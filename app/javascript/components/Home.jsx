@@ -16,6 +16,7 @@ const Home = () => {
   const answerVisible = useRef(false)
   const textAreaDisabled = useRef(false)
   const textArea = useRef(null)
+  const form = useRef(null)
 
   const loadingText = ['Hmm...', 'I know that...', 'Noice...']
 
@@ -33,7 +34,7 @@ const Home = () => {
     event.preventDefault()
     textAreaDisabled.current = true
     answerVisible.current = true
-    const question = new FormData(event.currentTarget).get('question')
+    const question = new FormData(form.current).get('question')
     askQuestion.mutate(question)
   }
 
@@ -79,10 +80,7 @@ const Home = () => {
           a question and <span className="font-mono font-medium">AI</span>'ll
           answer it in real-time:
         </p>
-        <form
-          onSubmit={handleQuestionSubmit}
-          className="flex flex-col items-center w-2/3"
-        >
+        <form ref={form} className="flex flex-col items-center w-2/3">
           <textarea
             ref={textArea}
             className="p-2 text-sm md:text-md resize-y md:resize-none form-control w-full sm:h-auto h-24 rounded-lg shadow-md disabled:shadow-lg font-normal font-mono disabled:bg-slate-300"
@@ -102,7 +100,11 @@ const Home = () => {
                 : ''
             } mt-4 font-serif flex flex-col sm:flex-row gap-2 min-w-full justify-center items-center`}
           >
-            <button className="bg-black basis-1/2 w-full sm:w-auto text-sm sm:text-md shadow rounded-lg text-white px-4 py-2 font-bold">
+            <button
+              onClick={handleQuestionSubmit}
+              disabled={query.length === 0}
+              className="bg-black hover:ring-2 hover:ring-stone-400 disabled:bg-gray-600 disabled:text-gray-100 disabled:shadow-none basis-1/2 w-full sm:w-auto text-sm sm:text-md shadow-lg rounded-lg text-white px-4 py-2 font-bold"
+            >
               Ask question
             </button>
             <button
