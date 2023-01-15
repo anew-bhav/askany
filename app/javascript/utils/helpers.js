@@ -1,5 +1,10 @@
 const randomElementFrom = (array) => {
-  if (array === null || array === undefined || typeof(array) === 'Object' || array.length === 0){
+  if (
+    array === null ||
+    array === undefined ||
+    typeof array === 'Object' ||
+    array.length === 0
+  ) {
     return null
   }
 
