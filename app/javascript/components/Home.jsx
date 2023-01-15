@@ -61,23 +61,20 @@ const Home = () => {
       </p>
       <form
         onSubmit={handleQuestionSubmit}
-        className="flex flex-col items-center"
+        className="flex flex-col items-center w-1/3"
       >
-        <label htmlFor="question_input">
-          <textarea
-            ref={textArea}
-            className="p-4 rounded-lg shadow font-light font-mono"
-            rows="4"
-            cols="60"
-            placeholder="Type in a question"
-            value={query}
-            onChange={handleTextChange}
-            type="text"
-            id="question_input"
-            name="question"
-            disabled={textAreaDisabled.current}
-          />
-        </label>
+        <textarea
+          ref={textArea}
+          className="p-4 resize-none form-control w-full rounded-lg shadow font-light font-mono disabled:bg-slate-500"
+          rows="4"
+          placeholder="Type in a question"
+          value={query}
+          onChange={handleTextChange}
+          type="text"
+          id="question_input"
+          name="question"
+          disabled={textAreaDisabled.current}
+        />
         <div
           className="mt-4 font-serif"
           hidden={false || askQuestion.isLoading || answerVisible.current}
