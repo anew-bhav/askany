@@ -7,6 +7,8 @@ Rails.application.routes.draw do
       get 'top', to: "questions#top_questions"
     end
   end
+
+  match '*unmatched', to: 'api#not_found_method', via: :all
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
