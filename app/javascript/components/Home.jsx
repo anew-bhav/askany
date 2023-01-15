@@ -1,12 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
-import { useMutation } from 'react-query'
+import { useMutation, useQuery } from 'react-query'
 import Answer from './Answer'
 import loadingGifs from '../loadingGifs.json'
 import { randomElementFrom } from '../utils/helpers'
 
 const Home = () => {
+  const topQuestions = useQuery(['top-questions'], () => {
+    return axios.get('/api/v1/top')
+  })
+
   const [query, setQuery] = useState('What is the book Animal Farm about?')
+  const [topQuestionsList, setTopQuestionsList] = useState([])
   const answer = useRef(null)
   const answerVisible = useRef(false)
   const textAreaDisabled = useRef(false)
@@ -42,6 +47,17 @@ const Home = () => {
     textAreaDisabled.current = false
     textArea.current.focus()
   }
+
+  const handleTopQuestion = (event) => {
+    event.preventDefault()
+    setQuery(randomElementFrom(topQuestionsList))
+  }
+
+  useEffect(() => {
+    if (topQuestions.isLoading === false) {
+      setTopQuestionsList(topQuestions.data.data.data.top_questions)
+    }
+  }, [topQuestions.isLoading])
 
   return (
     <div className=" bg-gray-200">
@@ -89,7 +105,11 @@ const Home = () => {
             <button className="bg-black basis-1/2 w-full sm:w-auto text-sm sm:text-md shadow rounded-lg text-white px-4 py-2 font-bold">
               Ask question
             </button>
-            <button className="bg-gray-100 basis-1/2 w-full sm:w-auto text-sm sm:text-md shadow rounded-lg px-4 py-2 font-bold">
+            <button
+              className="bg-gray-100 hover:ring-2 hover:ring-stone-300 disabled:bg-gray-300 disabled:text-gray-100 disabled:shadow-none basis-1/2 w-full sm:w-auto text-sm sm:text-md shadow-lg rounded-lg px-4 py-2 font-bold"
+              onClick={handleTopQuestion}
+              disabled={topQuestions.isLoading}
+            >
               I'm feeling Lucky
             </button>
           </div>
