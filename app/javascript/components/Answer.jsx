@@ -1,14 +1,18 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import Typed from 'typed.js'
 
 const Answer = ({ answer, questionHandler }) => {
   const element = useRef(null)
   const typed = useRef(null)
+  const [typingComplete, setTypingComplete] = useState(null)
 
   useEffect(() => {
     const options = {
       strings: [answer.current],
       typeSpeed: 20,
+      showCursor: false,
+      onBegin: () => setTypingComplete(false),
+      onComplete: () => setTypingComplete(true),
     }
 
     typed.current = new Typed(element.current, options)
@@ -31,9 +35,10 @@ const Answer = ({ answer, questionHandler }) => {
       </p>
       <button
         onClick={questionHandler}
-        className="bg-black w-full md:w-1/2 text-sm sm:text-md shadow rounded mt-4 text-white py-2 px-4 font-bold"
+        disabled={!typingComplete}
+        className="bg-black w-full hover:ring-2 hover:ring-stone-400 disabled:hover:ring-0 disabled:bg-gray-600 disabled:text-gray-100 disabled:shadow-none md:w-1/2 text-sm sm:text-md shadow-lg rounded-lg mt-4 text-white py-2 px-4 font-bold"
       >
-        Ask one more question
+        Ask another question
       </button>
     </div>
   )

@@ -43,6 +43,7 @@ const Home = () => {
   }
 
   const handleMoreQuestion = (event) => {
+    event.preventDefault()
     setQuery('')
     answerVisible.current = false
     textAreaDisabled.current = false
