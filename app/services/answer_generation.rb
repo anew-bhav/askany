@@ -28,7 +28,12 @@ class AnswerGeneration
         prompt: @prompt,
       }.merge(COMPLETIONS_API_PARAMS)
     )
-    [response["choices"][0]["text"], @chosen_sections]
+    case response.code
+    when 200
+      { success: true, data: {answer: response["choices"][0]["text"], context: @chosen_sections}}
+    else
+      { success: false }
+    end
   end
 
   def get_doc_embeddings(text)
