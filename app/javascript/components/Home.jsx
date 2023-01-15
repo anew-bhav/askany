@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import { useMutation } from 'react-query'
 import Answer from './Answer'
+import loadingGifs from '../loadingGifs.json'
 
 const Home = () => {
   const [query, setQuery] = useState('What is the book Animal Farm about?')
@@ -9,6 +10,8 @@ const Home = () => {
   const answerVisible = useRef(false)
   const textAreaDisabled = useRef(false)
   const textArea = useRef(null)
+
+  const loadingText = ['Hmm...', 'I know that...', 'Noice...']
 
   const askQuestion = useMutation({
     mutationFn: (question) => {
@@ -92,7 +95,17 @@ const Home = () => {
       ) : (
         ''
       )}
-      {askQuestion.isLoading ? <div>Loading...</div> : ''}
+      {askQuestion.isLoading ? (
+        <div className='flex mt-4 gap-2 flex-col items-center justify-center'>
+          <img alt="Loading"
+            className="w-auto h-32 bg-transparent rounded"
+            src={loadingGifs[Math.floor((Math.random()*loadingGifs.length))]}
+          />
+          <p className="font-serif font-bold text-base">{loadingText[Math.floor((Math.random()*loadingText.length))]}</p>
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   )
 }
