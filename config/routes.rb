@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
   root 'homepage#index'
 
-  namespace 'api' do
+  namespace 'api', defaults: {format: 'json'} do
     namespace 'v1' do
       post 'ask', to: "questions#ask_question"
+      get 'top', to: "questions#top_questions"
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

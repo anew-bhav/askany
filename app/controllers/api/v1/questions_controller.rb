@@ -25,6 +25,11 @@ module Api
         render json: { success: false , message: "#{e.message}"}, status: :internal_server_error
       end
 
+      def top_questions
+        questions = Question.order(ask_count: :desc).limit(10)
+        render json: {success: true, data: {top_questions: questions.pluck(:query)}}
+      end
+
       private
 
       def question_params
