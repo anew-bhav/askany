@@ -15,10 +15,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_14_213511) do
   enable_extension "plpgsql"
 
   create_table "questions", force: :cascade do |t|
-    t.text "prompt"
+    t.text "query"
     t.text "answer"
     t.text "context"
-    t.integer "ask_count"
+    t.integer "ask_count", default: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
