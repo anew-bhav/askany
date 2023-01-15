@@ -1,11 +1,31 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
+import Typed from 'typed.js'
 
 const Answer = ({ answer, questionHandler }) => {
+  const element = useRef(null)
+  const typed = useRef(null)
+
+  useEffect(() => {
+    const options = {
+      strings: [answer.current],
+      typeSpeed: 20,
+    }
+
+    typed.current = new Typed(element.current, options)
+
+    return () => {
+      typed.current.destroy()
+    }
+  }, [])
+
   return (
     <div className="flex flex-col justify-center text-justify items-center p-2 w-2/3">
       <p className="font-bold font-serif text-md">
         Answer:{' '}
-        <span className="font-normal font-serif text-sm sm:text-md">
+        <span
+          ref={element}
+          className="font-normal font-serif text-sm sm:text-md"
+        >
           {answer.current}
         </span>
       </p>
