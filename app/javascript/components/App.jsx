@@ -1,24 +1,27 @@
-import React from "react";
-import { RouterProvider } from "react-router-dom";
+import React from 'react'
+import { RouterProvider } from 'react-router-dom'
 import { createBrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from 'react-query'
 
 import Home from '../components/Home'
 
 const App = () => {
-  const router = createBrowserRouter([{
-    path: "/",
-    element: <Home />
-  }])
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <Home />,
+    },
+  ])
 
-  const queryClient = new QueryClient({});
+  const queryClient = new QueryClient({})
 
-  return(
+  return (
     <QueryClientProvider client={queryClient}>
       <React.StrictMode>
-        <RouterProvider router={router}/>
+        <RouterProvider router={router} />
       </React.StrictMode>
-    </QueryClientProvider>)
+    </QueryClientProvider>
+  )
 }
 
-export default App;
+export default App

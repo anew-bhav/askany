@@ -3,12 +3,12 @@ module.exports = {
     './app/views/**/*.html.erb',
     './app/helpers/**/*.rb',
     './app/assets/stylesheets/**/*.css',
-    './app/javascript/**/*.{js,jsx}'
+    './app/javascript/**/*.{js,jsx}',
   ],
   theme: {
     fontFamily: {
-      'serif': ['Inter', 'sans-serif'],
-      'mono': ['"Martian Mono"', 'mono']
-    }
-  }
+      serif: ['Inter', 'sans-serif'],
+      mono: ['"Martian Mono"', 'mono'],
+    },
+  },
 }
