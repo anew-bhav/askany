@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import { useMutation } from 'react-query'
+import Answer from './Answer'
 
 const Home = () => {
   const [query, setQuery] = useState('What is the book Animal Farm about?')
@@ -90,18 +91,7 @@ const Home = () => {
         </div>
       </form>
       {answerVisible.current && !askQuestion.isLoading ? (
-        <div className="flex flex-col justify-center">
-          <p>
-            Answer:
-            <span>{answer.current}</span>
-          </p>
-          <button
-            onClick={handleMoreQuestion}
-            className="bg-black shadow rounded text-white py-2 px-4 font-bold"
-          >
-            Ask one more question
-          </button>
-        </div>
+        <Answer answer={answer} questionHandler={handleMoreQuestion} />
       ) : (
         ''
       )}
