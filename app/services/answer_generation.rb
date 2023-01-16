@@ -1,6 +1,5 @@
 class AnswerGeneration
   COMPLETIONS_MODEL = "text-davinci-003"
-  DOC_EMBEDDINGS_MODEL = "text-search-curie-doc-001"
   QUERY_EMBEDDINGS_MODEL = "text-search-curie-query-001"
   MAX_SECTION_LEN = 500
   SEPERATOR = "\n* "
@@ -11,15 +10,15 @@ class AnswerGeneration
     "model": COMPLETIONS_MODEL,
   }
 
-  def initialize(query)
+  def initialize(query, embeddings_csv_path:, section_csv_path:)
     @query = query
-    @openai_client = OpenAI::Client.new(access_token: ENV["OPENAI_ACCESS_KEY"])
-    @query_embeddings = get_query_embeddings(query)
-    initialize_sections
-    initialize_embeddings
+    @embeddings_csv_path = embeddings_csv_path
+    @section_csv_path = section_csv_path
   end
 
   def call
+    initialize_openai_client
+    filter_relevant_sections
     construct_prompt
 
     response = @openai_client.completions(
@@ -35,16 +34,61 @@ class AnswerGeneration
     end
   end
 
-  def get_doc_embeddings(text)
-    get_embeddings(text, DOC_EMBEDDINGS_MODEL)
+  private
+
+  def initialize_openai_client
+    @openai_client = OpenAI::Client.new(access_token: ENV["OPENAI_ACCESS_KEY"])
+  end
+
+  def filter_relevant_sections
+    sections = read_sections_file(@section_csv_path)
+
+    relevant_sections_len = 0
+    @relevant_sections = []
+
+    sections_ordered_by_query_similarity.each do |_, index|
+      section_data = sections[index]
+      relevant_sections_len += section_data["tokens"].to_i + SEPERATOR.size
+      if relevant_sections_len > MAX_SECTION_LEN
+        space_left = MAX_SECTION_LEN - relevant_sections_len - SEPERATOR.size
+        @relevant_sections << SEPERATOR + section_data["content"][...space_left]
+        break
+      end
+      @relevant_sections << SEPERATOR + section_data["content"]
+    end
+  end
+
+  def read_sections_file(file_path)
+    file = CSV.read(file_path, headers: true)
+    data = {}
+    file.each do |row|
+      _, title = row.delete("title")
+      data[title] = row.to_h
+    end
+    data
+  end
+
+  def sections_ordered_by_query_similarity
+    embeddings_from_file = read_embeddings_file(@embeddings_csv_path)
+    query_embeddings = get_query_embeddings(@query)
+    embeddings_from_file.map do |page, embeddings|
+      [vector_similarity(query_embeddings, embeddings), page]
+    end.sort_by { |similarity, _| similarity }.reverse
+  end
+
+  def read_embeddings_file(file_path)
+    file = CSV.read(file_path, headers: true)
+    data = {}
+    dimensions = file.headers - ["title"]
+    file.each do |row|
+      _, title = row.delete("title")
+      data[title] = row.to_a.map { |a| a[1] }
+    end
+    data
   end
 
   def get_query_embeddings(text)
-    get_embeddings(text, QUERY_EMBEDDINGS_MODEL)
-  end
-
-  def get_embeddings(text, model)
-    response = @openai_client.embeddings(parameters: { model: model, input: text })
+    response = @openai_client.embeddings(parameters: { model: QUERY_EMBEDDINGS_MODEL, input: text })
     response["data"].first["embedding"]
   end
 
@@ -52,61 +96,14 @@ class AnswerGeneration
     ::Vector[*a.map(&:to_f)].inner_product(::Vector[*b.map(&:to_f)])
   end
 
-  def order_doc_sections_by_query_similarity
-    query_embedding = get_query_embeddings(@query)
-
-    @embeddings.map do |page, embeddings|
-      [vector_similarity(query_embedding, embeddings), page]
-    end.sort_by { |similarity| similarity }.reverse
-  end
-
-  def initialize_embeddings
-    file = CSV.read("./book_embeddings.csv", headers: true)
-    data = {}
-    dimensions = file.headers - ["title"]
-    file.each do |row|
-      _, title = row.delete("title")
-      data[title] = row.to_a.map { |a| a[1] }
-    end
-    @embeddings = data
-  end
-
-  def initialize_sections
-    file = CSV.read("./book_sections.csv", headers: true)
-    data = {}
-    file.each do |row|
-      _, title = row.delete("title")
-      data[title] = row.to_h
-    end
-    @sections = data
-  end
-
   def construct_prompt
-    most_relevant_sections = order_doc_sections_by_query_similarity
-    @chosen_sections = []
-    chosen_sections_len = 0
-    chosen_sections_indexes = []
-
-    most_relevant_sections.each do |_, index|
-      section_data = @sections[index]
-      chosen_sections_len += section_data["tokens"].to_i + SEPERATOR.size
-      if chosen_sections_len > MAX_SECTION_LEN
-        space_left = MAX_SECTION_LEN - chosen_sections_len - SEPERATOR.size
-        @chosen_sections << SEPERATOR + section_data["content"][...space_left]
-        chosen_sections_indexes.append(index)
-        break
-      end
-      @chosen_sections << SEPERATOR + section_data["content"]
-      chosen_sections_indexes.append(index)
-    end
-
     @prompt = <<-PROMPT
       George Orwell is a well known writter. He is the author of Animal Farm.
       These are a few questions about the theme of the book.
       Please keep your answers to three sentences maximum, and speak complete sentences. Stop speaking once your point is made.
 
       Context that may be useful, pull from Animal Farm:
-      #{@chosen_sections.join(" ")}
+      #{@relevant_sections.join(" ")}
 
       Q: What is the main theme of Animal Farm?
       A: The main theme of Animal Farm is the dangers of totalitarianism and the betrayal of revolutionary ideals.

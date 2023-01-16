@@ -11,7 +11,12 @@ module Api
             render json: { success: false }, status: :internal_server_error
           end
         else
-          response = AnswerGeneration.new(question_params[:query]).call
+          response = AnswerGeneration.new(
+            question_params[:query],
+            embeddings_csv_path: "./book_embeddings.csv",
+            section_csv_path: "./book_sections.csv",
+          )
+            .call
           if response[:success]
             question.answer = response[:data][:answer]
             question.context = response[:data][:context]
