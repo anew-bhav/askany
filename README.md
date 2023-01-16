@@ -70,4 +70,5 @@ Working iteratively on the frontend making it better with every passing minute.
 - create a generalized ask_a_book service,  where user uploads a pdf and can talk to it.
 - show loading emojis based on question's mood.
 - share general fact about the book after each question is answered.
-- store embeddings in a specialized databases
+- store embeddings in a specialized databases to reduce request times, [pinecone](https://app.pinecone.io) is something that has been recommended by open ai.
+- find similarities between two questions that would eventually land the same answer, we can detect this case and optimize
