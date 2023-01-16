@@ -5,8 +5,11 @@ module Api
         question = Question.find_or_initialize_by(query: question_params[:query])
         if question.persisted? && question.answer.present?
           question.ask_count += 1
-          question.save
-          render json: {answer: question.answer, success: true}, status: :ok
+          if question.save
+            render json: { answer: question.answer, success: true }, status: :ok
+          else
+            render json: { success: false }, status: :internal_server_error
+          end
         else
           response = AnswerGeneration.new(question_params[:query]).call
           if response[:success]
