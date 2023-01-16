@@ -26,6 +26,7 @@ group :development, :test do
   gem "factory_bot_rails", "~> 6.2"
   gem "simplecov", "~> 0.22.0", require: false
   gem "faker", "~> 3.1"
+  gem "rails-controller-testing", "~> 1.0"
 end
 
 group :development do
@@ -34,3 +35,4 @@ group :development do
   gem "pycall", "~> 1.4"
   gem "redis", "~> 4.0"
 end
+
