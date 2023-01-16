@@ -22,6 +22,10 @@ gem "matrix", "~> 0.4.2"
 group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem "dotenv-rails", "~> 2.8"
+  gem "rspec-rails", "~> 6.0"
+  gem "factory_bot_rails", "~> 6.2"
+  gem "simplecov", "~> 0.22.0", require: false
+  gem "faker", "~> 3.1"
 end
 
 group :development do
@@ -30,7 +34,3 @@ group :development do
   gem "pycall", "~> 1.4"
   gem "redis", "~> 4.0"
 end
-
-
-
-
