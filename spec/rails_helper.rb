@@ -6,7 +6,12 @@ require_relative "../config/environment"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require "rspec/rails"
 require "simplecov"
-SimpleCov.start
+SimpleCov.start 'rails' do
+  add_filter "app/channels"
+  add_filter "app/helpers"
+  add_filter "app/jobs"
+  add_filter "app/mailers"
+end
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
