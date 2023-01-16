@@ -1,5 +1,4 @@
 class AnswerGeneration
-
   COMPLETIONS_MODEL = "text-davinci-003"
   DOC_EMBEDDINGS_MODEL = "text-search-curie-doc-001"
   QUERY_EMBEDDINGS_MODEL = "text-search-curie-query-001"
@@ -9,12 +8,12 @@ class AnswerGeneration
   COMPLETIONS_API_PARAMS = {
     "temperature": 0.0,
     "max_tokens": 150,
-    "model": COMPLETIONS_MODEL
+    "model": COMPLETIONS_MODEL,
   }
 
   def initialize(query)
     @query = query
-    @openai_client = OpenAI::Client.new(access_token: ENV['OPENAI_ACCESS_KEY'])
+    @openai_client = OpenAI::Client.new(access_token: ENV["OPENAI_ACCESS_KEY"])
     @query_embeddings = get_query_embeddings(query)
     initialize_sections
     initialize_embeddings
@@ -26,11 +25,11 @@ class AnswerGeneration
     response = @openai_client.completions(
       parameters: {
         prompt: @prompt,
-      }.merge(COMPLETIONS_API_PARAMS)
+      }.merge(COMPLETIONS_API_PARAMS),
     )
     case response.code
     when 200
-      { success: true, data: {answer: response["choices"][0]["text"], context: @chosen_sections}}
+      { success: true, data: { answer: response["choices"][0]["text"], context: @chosen_sections } }
     else
       { success: false }
     end
@@ -45,38 +44,38 @@ class AnswerGeneration
   end
 
   def get_embeddings(text, model)
-    response = @openai_client.embeddings(parameters: {model: model, input: text})
-    response['data'].first['embedding']
+    response = @openai_client.embeddings(parameters: { model: model, input: text })
+    response["data"].first["embedding"]
   end
 
-  def vector_similarity(a,b)
+  def vector_similarity(a, b)
     ::Vector[*a.map(&:to_f)].inner_product(::Vector[*b.map(&:to_f)])
   end
 
   def order_doc_sections_by_query_similarity
     query_embedding = get_query_embeddings(@query)
 
-    @embeddings.map do |page,embeddings|
+    @embeddings.map do |page, embeddings|
       [vector_similarity(query_embedding, embeddings), page]
-    end.sort_by{|similarity| similarity}.reverse
+    end.sort_by { |similarity| similarity }.reverse
   end
 
   def initialize_embeddings
-    file = CSV.read('./book_embeddings.csv', headers: true)
+    file = CSV.read("./book_embeddings.csv", headers: true)
     data = {}
-    dimensions = file.headers - ['title']
+    dimensions = file.headers - ["title"]
     file.each do |row|
-      _, title = row.delete('title')
-      data[title] = row.to_a.map{|a| a[1]}
+      _, title = row.delete("title")
+      data[title] = row.to_a.map { |a| a[1] }
     end
     @embeddings = data
   end
 
   def initialize_sections
-    file = CSV.read('./book_sections.csv', headers: true)
+    file = CSV.read("./book_sections.csv", headers: true)
     data = {}
     file.each do |row|
-      _, title = row.delete('title')
+      _, title = row.delete("title")
       data[title] = row.to_h
     end
     @sections = data
@@ -90,14 +89,14 @@ class AnswerGeneration
 
     most_relevant_sections.each do |_, index|
       section_data = @sections[index]
-      chosen_sections_len += section_data['tokens'].to_i + SEPERATOR.size
+      chosen_sections_len += section_data["tokens"].to_i + SEPERATOR.size
       if chosen_sections_len > MAX_SECTION_LEN
         space_left = MAX_SECTION_LEN - chosen_sections_len - SEPERATOR.size
-        @chosen_sections << SEPERATOR + section_data['content'][...space_left]
+        @chosen_sections << SEPERATOR + section_data["content"][...space_left]
         chosen_sections_indexes.append(index)
         break
       end
-      @chosen_sections << SEPERATOR+section_data['content']
+      @chosen_sections << SEPERATOR + section_data["content"]
       chosen_sections_indexes.append(index)
     end
 

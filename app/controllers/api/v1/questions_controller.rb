@@ -25,18 +25,18 @@ module Api
           end
         end
       rescue => e
-        render json: { success: false , message: "#{e.message}"}, status: :internal_server_error
+        render json: { success: false, message: "#{e.message}" }, status: :internal_server_error
       end
 
       def top_questions
         questions = Question.order(ask_count: :desc).limit(10)
-        render json: {success: true, data: {top_questions: questions.pluck(:query)}}
+        render json: { success: true, data: { top_questions: questions.pluck(:query) } }
       end
 
       private
 
       def question_params
-      params.require(:question).permit(:query)
+        params.require(:question).permit(:query)
       end
     end
   end

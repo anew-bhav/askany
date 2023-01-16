@@ -28,7 +28,7 @@ module Abe0a9ef73f455d4bc6a791ac9fde5f5
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    if ['development', 'test'].include? ENV['RAILS_ENV']
+    if ["development", "test"].include? ENV["RAILS_ENV"]
       Dotenv::Railtie.load
     end
     # config.time_zone = "Central Time (US & Canada)"
