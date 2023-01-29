@@ -75,6 +75,7 @@ GEM
       msgpack (~> 1.2)
     builder (3.2.4)
     concurrent-ruby (1.1.10)
+    connection_pool (2.3.0)
     content_disposition (1.0.0)
     crass (1.0.6)
     cssbundling-rails (1.1.2)
@@ -224,6 +225,10 @@ GEM
     shrine (3.4.0)
       content_disposition (~> 1.0)
       down (~> 5.1)
+    sidekiq (6.5.8)
+      connection_pool (>= 2.2.5, < 3)
+      rack (~> 2.0)
+      redis (>= 4.5.0, < 5)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -283,6 +288,7 @@ DEPENDENCIES
   rspec-rails (~> 6.0)
   ruby-openai (~> 3.0)
   shrine (~> 3.4)
+  sidekiq (< 7.0)
   simplecov (~> 0.22.0)
   sprockets-rails
   stimulus-rails

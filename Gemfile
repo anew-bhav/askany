@@ -20,6 +20,7 @@ gem "pdf-reader", "~> 2.11"
 gem "matrix", "~> 0.4.2"
 gem "shrine", "~> 3.4"
 gem "marcel", "~> 1.0"
+gem "sidekiq", "<7.0"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
