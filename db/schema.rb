@@ -15,6 +15,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_29_154445) do
   enable_extension "hstore"
   enable_extension "plpgsql"
 
+  create_table "books", force: :cascade do |t|
+    t.string "title"
+    t.text "prompt"
+    t.jsonb "file_data"
+    t.jsonb "embeddings"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "questions", force: :cascade do |t|
     t.text "query"
     t.text "answer"
@@ -23,4 +32,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_29_154445) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
 end
