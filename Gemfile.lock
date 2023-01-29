@@ -67,12 +67,15 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+    addressable (2.8.1)
+      public_suffix (>= 2.0.2, < 6.0)
     afm (0.2.2)
     bindex (0.8.1)
     bootsnap (1.15.0)
       msgpack (~> 1.2)
     builder (3.2.4)
     concurrent-ruby (1.1.10)
+    content_disposition (1.0.0)
     crass (1.0.6)
     cssbundling-rails (1.1.2)
       railties (>= 6.0.0)
@@ -86,6 +89,8 @@ GEM
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
       railties (>= 3.2)
+    down (5.4.0)
+      addressable (~> 2.8)
     erubi (1.12.0)
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
@@ -151,6 +156,7 @@ GEM
       ruby-rc4
       ttfunk
     pg (1.4.5)
+    public_suffix (5.0.1)
     puma (5.6.5)
       nio4r (~> 2.0)
     pycall (1.4.2)
@@ -215,6 +221,9 @@ GEM
     ruby-openai (3.0.3)
       httparty (>= 0.18.1, < 0.22.0)
     ruby-rc4 (0.1.5)
+    shrine (3.4.0)
+      content_disposition (~> 1.0)
+      down (~> 5.1)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -262,6 +271,7 @@ DEPENDENCIES
   hotwire-livereload (~> 1.2)
   jbuilder
   jsbundling-rails
+  marcel (~> 1.0)
   matrix (~> 0.4.2)
   pdf-reader (~> 2.11)
   pg (~> 1.1)
@@ -272,6 +282,7 @@ DEPENDENCIES
   redis (~> 4.0)
   rspec-rails (~> 6.0)
   ruby-openai (~> 3.0)
+  shrine (~> 3.4)
   simplecov (~> 0.22.0)
   sprockets-rails
   stimulus-rails
