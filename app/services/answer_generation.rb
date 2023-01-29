@@ -1,23 +1,23 @@
 class AnswerGeneration
   COMPLETIONS_MODEL = "text-davinci-003"
-  QUERY_EMBEDDINGS_MODEL = "text-search-curie-query-001"
-  MAX_SECTION_LEN = 500
+  QUERY_EMBEDDINGS_MODEL = "text-embedding-ada-002"
+  MAX_SECTION_LEN = 1000
   SEPERATOR = "\n* "
 
   COMPLETIONS_API_PARAMS = {
-    "temperature": 0.0,
+    "temperature": 0.3,
     "max_tokens": 150,
     "model": COMPLETIONS_MODEL,
   }
 
-  def initialize(query, embeddings_csv_path:, section_csv_path:)
+  def initialize(query, embeddings_file_path:)
     @query = query
-    @embeddings_csv_path = embeddings_csv_path
-    @section_csv_path = section_csv_path
+    @embeddings_file_path = embeddings_file_path
   end
 
   def call
     initialize_openai_client
+    read_embeddings_file(@embeddings_file_path)
     filter_relevant_sections
     construct_prompt
 
@@ -28,7 +28,7 @@ class AnswerGeneration
     )
     case response.code
     when 200
-      { success: true, data: { answer: response["choices"][0]["text"], context: @chosen_sections } }
+      { success: true, data: { answer: response["choices"][0]["text"], context: @relevant_sections.join(' ') } }
     else
       { success: false }
     end
@@ -41,14 +41,12 @@ class AnswerGeneration
   end
 
   def filter_relevant_sections
-    sections = read_sections_file(@section_csv_path)
-
     relevant_sections_len = 0
     @relevant_sections = []
 
     sections_ordered_by_query_similarity.each do |_, index|
-      section_data = sections[index]
-      relevant_sections_len += section_data["tokens"].to_i + SEPERATOR.size
+      section_data = @embeddings.filter{|data| data["title"] == index}.first
+      relevant_sections_len += section_data["token_count"].to_i + SEPERATOR.size
       if relevant_sections_len > MAX_SECTION_LEN
         space_left = MAX_SECTION_LEN - relevant_sections_len - SEPERATOR.size
         @relevant_sections << SEPERATOR + section_data["content"][...space_left]
@@ -58,33 +56,16 @@ class AnswerGeneration
     end
   end
 
-  def read_sections_file(file_path)
-    file = CSV.read(file_path, headers: true)
-    data = {}
-    file.each do |row|
-      _, title = row.delete("title")
-      data[title] = row.to_h
-    end
-    data
-  end
-
   def sections_ordered_by_query_similarity
-    embeddings_from_file = read_embeddings_file(@embeddings_csv_path)
     query_embeddings = get_query_embeddings(@query)
-    embeddings_from_file.map do |page, embeddings|
-      [vector_similarity(query_embeddings, embeddings), page]
+    @embeddings.map do |page_data|
+      [vector_similarity(query_embeddings, page_data["embeddings"]), page_data["title"]]
     end.sort_by { |similarity, _| similarity }.reverse
   end
 
   def read_embeddings_file(file_path)
-    file = CSV.read(file_path, headers: true)
-    data = {}
-    dimensions = file.headers - ["title"]
-    file.each do |row|
-      _, title = row.delete("title")
-      data[title] = row.to_a.map { |a| a[1] }
-    end
-    data
+    file_raw_data = File.read(file_path)
+    @embeddings = JSON.parse(file_raw_data)
   end
 
   def get_query_embeddings(text)
@@ -100,7 +81,7 @@ class AnswerGeneration
     @prompt = <<-PROMPT
       George Orwell is a well known writter. He is the author of Animal Farm.
       These are a few questions about the theme of the book.
-      Please keep your answers to three sentences maximum, and speak complete sentences. Stop speaking once your point is made.
+      Please keep your answers to five sentences maximum, and speak complete sentences. Stop speaking once your point is made.
 
       Context that may be useful, pull from Animal Farm:
       #{@relevant_sections.join(" ")}

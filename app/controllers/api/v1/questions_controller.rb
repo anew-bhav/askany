@@ -13,8 +13,7 @@ module Api
         else
           response = AnswerGeneration.new(
             question_params[:query],
-            embeddings_csv_path: "./book_embeddings.csv",
-            section_csv_path: "./book_sections.csv",
+            embeddings_file_path: "./book_data.json"
           )
             .call
           if response[:success]
