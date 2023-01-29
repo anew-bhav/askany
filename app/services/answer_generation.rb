@@ -1,23 +1,23 @@
 class AnswerGeneration
   COMPLETIONS_MODEL = "text-davinci-003"
   QUERY_EMBEDDINGS_MODEL = "text-embedding-ada-002"
-  MAX_SECTION_LEN = 1000
+  MAX_SECTION_LEN = 500
   SEPERATOR = "\n* "
 
   COMPLETIONS_API_PARAMS = {
-    "temperature": 0.3,
+    "temperature": 0.0,
     "max_tokens": 150,
     "model": COMPLETIONS_MODEL,
   }
 
-  def initialize(query, embeddings_file_path:)
+  def initialize(query, book)
     @query = query
-    @embeddings_file_path = embeddings_file_path
+    @book = book
   end
 
   def call
     initialize_openai_client
-    read_embeddings_file(@embeddings_file_path)
+    read_embeddings_from_book
     filter_relevant_sections
     construct_prompt
 
@@ -32,6 +32,8 @@ class AnswerGeneration
     else
       { success: false }
     end
+  rescue => e
+      { success: false, error: "Something wrong with OpenAI servers" }
   end
 
   private
@@ -63,8 +65,8 @@ class AnswerGeneration
     end.sort_by { |similarity, _| similarity }.reverse
   end
 
-  def read_embeddings_file(file_path)
-    file_raw_data = File.read(file_path)
+  def read_embeddings_from_book
+    file_raw_data = @book.embeddings
     @embeddings = JSON.parse(file_raw_data)
   end
 
@@ -78,46 +80,6 @@ class AnswerGeneration
   end
 
   def construct_prompt
-    @prompt = <<-PROMPT
-      George Orwell is a well known writter. He is the author of Animal Farm.
-      These are a few questions about the theme of the book.
-      Please keep your answers to five sentences maximum, and speak complete sentences. Stop speaking once your point is made.
-
-      Context that may be useful, pull from Animal Farm:
-      #{@relevant_sections.join(" ")}
-
-      Q: What is the main theme of Animal Farm?
-      A: The main theme of Animal Farm is the dangers of totalitarianism and the betrayal of revolutionary ideals.
-
-      Q: Who is the protagonist in the book?
-      A: The animals, particularly the more intelligent ones such as the pigs, are the protagonists in the book.
-
-      Q: Who are the antagonists in the book?
-      A: The pigs, specifically Napoleon and Snowball, are the antagonists in the book as they slowly assume more power and betray the other animals.
-
-      Q: What is the significance of the pigs in the book?
-      A: The pigs in the book represent the ruling elite and their gradual assumption of power and manipulation of the other animals allegorically depicts the rise of Stalin and the Communist Party in the Soviet Union.
-
-      Q: What historical event does the book allegorically depict?
-      A: The book allegorically depicts the Russian Revolution of 1917 and the subsequent rise of Stalin's dictatorship.
-
-      Q: What is the significance of the character Napoleon in the book?
-      A: Napoleon represents Joseph Stalin, the leader of the Soviet Union, who consolidates power through manipulation and betrayal of his fellow revolutionaries.
-
-      Q: What is the significance of the character Snowball in the book?
-      A: Snowball represents Leon Trotsky, a rival of Stalin's in the Communist Party, who is eventually exiled.
-
-      Q: What is the significance of the character Boxer in the book?
-      A: Boxer represents the working class and their blind loyalty to the party, despite being exploited and mistreated.
-
-      Q: What is the significance of the character Old Major in the book?
-      A: Old Major represents Karl Marx, the father of Communist theory, whose ideas are corrupted and twisted by the pigs.
-
-      Q: What is the significance of the commandment "All animals are equal" in the book?
-      A: The commandment "All animals are equal" represents the ideals of the revolution, which are gradually eroded and replaced with the pigs' dictatorial rule.
-
-      Q: #{@query}
-      A:
-    PROMPT
+    @prompt = @book.prompt.gsub(/{{context}}/, @relevant_sections.join(' ')).gsub(/{{query}}/, @query)
   end
 end
