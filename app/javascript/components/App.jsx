@@ -8,7 +8,7 @@ import Home from '../components/Home'
 const App = () => {
   const router = createBrowserRouter([
     {
-      path: '/',
+      path: '/askabook',
       element: <Home />,
     },
   ])

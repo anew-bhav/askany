@@ -7,7 +7,7 @@ import { randomElementFrom } from '../utils/helpers'
 
 const Home = () => {
   const topQuestions = useQuery(['top-questions'], () => {
-    return axios.get('/api/v1/top', {params: {question: {book_id: 2}}})
+    return axios.get('/askabook/api/v1/top', {params: {question: {book_id: 2}}})
   })
 
   const [query, setQuery] = useState('What is the book Animal Farm about?')
@@ -22,7 +22,7 @@ const Home = () => {
 
   const askQuestion = useMutation({
     mutationFn: (question) => {
-      return axios.post('/api/v1/ask', { question: { query: question, book_id: 2} })
+      return axios.post('/askabook/api/v1/ask', { question: { query: question, book_id: 2} })
     },
     onSuccess: (data) => {
       answer.current = data.data.answer
