@@ -21,10 +21,10 @@ gem "matrix", "~> 0.4.2"
 gem "shrine", "~> 3.4"
 gem "marcel", "~> 1.0"
 gem "sidekiq", "<7.0"
+gem "dotenv-rails", "~> 2.8"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
-  gem "dotenv-rails", "~> 2.8"
   gem "rspec-rails", "~> 6.0"
   gem "factory_bot_rails", "~> 6.2"
   gem "simplecov", "~> 0.22.0", require: false
