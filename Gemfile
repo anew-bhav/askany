@@ -22,6 +22,7 @@ gem "shrine", "~> 3.4"
 gem "marcel", "~> 1.0"
 gem "sidekiq", "<7.0"
 gem "dotenv-rails", "~> 2.8"
+gem "aws-sdk-s3", "~> 1.119"
 
 group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
@@ -38,3 +39,4 @@ group :development do
   gem "pycall", "~> 1.4"
   gem "redis", "~> 4.0"
 end
+
