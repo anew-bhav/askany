@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import Typed from 'typed.js'
 
 const Answer = ({ answer, questionHandler }) => {
-  const element = useRef(null)
+  const targetElement = useRef(null)
   const typed = useRef(null)
   const [typingComplete, setTypingComplete] = useState(null)
 
@@ -15,7 +15,7 @@ const Answer = ({ answer, questionHandler }) => {
       onComplete: () => setTypingComplete(true),
     }
 
-    typed.current = new Typed(element.current, options)
+    typed.current = new Typed(targetElement.current, options)
 
     return () => {
       typed.current.destroy()
@@ -27,7 +27,7 @@ const Answer = ({ answer, questionHandler }) => {
       <p className="font-bold font-serif text-md">
         Answer:{' '}
         <span
-          ref={element}
+          ref={targetElement}
           className="font-normal font-serif text-sm sm:text-md"
         >
           {answer.current}

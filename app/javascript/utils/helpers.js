@@ -1,4 +1,4 @@
-const randomElementFrom = (array) => {
+export const getRandomElement = (array) => {
   if (
     array === null ||
     array === undefined ||
@@ -10,5 +10,3 @@ const randomElementFrom = (array) => {
 
   return array[Math.floor(Math.random() * array.length)]
 }
-
-export { randomElementFrom }

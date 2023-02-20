@@ -1,41 +1,42 @@
 import React, { useState, useRef, useEffect } from 'react'
-import axios from 'axios'
-import { useMutation, useQuery } from 'react-query'
+
+import { getRandomElement } from '../utils/helpers'
+import { useAskQuestion, useTopQuestions } from '../hooks'
+
+import CONSTANTS from '../constants'
 import Answer from './Answer'
-import loadingGifs from '../loadingGifs.json'
-import { randomElementFrom } from '../utils/helpers'
+import Loader from './Loader'
 
 const Home = () => {
-  const topQuestions = useQuery(['top-questions'], () => {
-    return axios.get('/askabook/api/v1/top', {params: {question: {book_id: 1}}})
-  })
+  const topQuestions = useTopQuestions({ book_id: 2 })
+  const askQuestion = useAskQuestion()
 
-  const [query, setQuery] = useState('What is the book Animal Farm about?')
+  const [query, setQuery] = useState(CONSTANTS.initialQuestion)
+
   const [topQuestionsList, setTopQuestionsList] = useState([])
+
   const answer = useRef(null)
   const answerVisible = useRef(false)
-  const textAreaDisabled = useRef(false)
+
   const textArea = useRef(null)
+  const textAreaDisabled = useRef(false)
+
   const form = useRef(null)
-
-  const loadingText = ['Hmm...', 'I know that...', 'Noice...']
-
-  const askQuestion = useMutation({
-    mutationFn: (question) => {
-      return axios.post('/askabook/api/v1/ask', { question: { query: question, book_id: 1} })
-    },
-    onSuccess: (data) => {
-      answer.current = data.data.answer
-      answerVisible.current = true
-    },
-  })
 
   const handleQuestionSubmit = (event) => {
     event.preventDefault()
     textAreaDisabled.current = true
     answerVisible.current = true
     const question = new FormData(form.current).get('question')
-    askQuestion.mutate(question)
+    askQuestion.mutate(
+      { query: question, book_id: 2 },
+      {
+        onSuccess: (data) => {
+          answer.current = data.data.answer
+          answerVisible.current = true
+        },
+      }
+    )
   }
 
   const handleTextChange = (event) => {
@@ -52,12 +53,12 @@ const Home = () => {
 
   const handleTopQuestion = (event) => {
     event.preventDefault()
-    setQuery(randomElementFrom(topQuestionsList))
+    setQuery(getRandomElement(topQuestionsList))
   }
 
   useEffect(() => {
     if (topQuestions.isLoading === false) {
-      setTopQuestionsList(topQuestions.data.data.data.top_questions)
+      setTopQuestionsList(topQuestions?.data?.data?.data?.top_questions)
     }
   }, [topQuestions.isLoading])
 
@@ -122,21 +123,7 @@ const Home = () => {
         ) : (
           ''
         )}
-        {askQuestion.isLoading ? (
-          <div className="flex mt-4 gap-2 flex-col items-center justify-center">
-            <img
-              alt="Loading"
-              className="w-auto h-32 bg-transparent rounded"
-              src={randomElementFrom(loadingGifs)}
-
-            />
-            <p className="font-serif font-bold text-base">
-              {randomElementFrom(loadingText)}
-            </p>
-          </div>
-        ) : (
-          ''
-        )}
+        {askQuestion.isLoading ? <Loader /> : ''}
       </div>
     </div>
   )
