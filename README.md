@@ -29,15 +29,20 @@ The v0, as it was aiming to exactly replicate what _askmybook_ did, the architec
    ```bash
    ruby scripts/create_embeddings.rb
    ```
-3. The `app/services/answer_generation.rb` handled in finding the most relevant sections, embedding the context in the prompt, and use the prompt to answer the query. PS: This service is now updated to accomodate v1.
+3. The `app/services/answer_generation.rb` handled in finding the most relevant sections, embedding the context in the prompt, and use the prompt to answer the query. PS: This service is now updated to accomodate v0.1
 More on v0 [journey](JOURNEY.md)
 
 ### v0.1
 v0 worked but it was slow.
+
 Primary reason - We worked with large CSV and the logic was based on reading the CSV for each request.
+
 We figured out that CSV files were not needed.
+
 We moved away from that dependency and stored the embeddings as JSON in the database.
 
 We also figured out, the interop with python was not required at all.
+
 We removed it completely.
+
 We are now a pure ruby implementation.
