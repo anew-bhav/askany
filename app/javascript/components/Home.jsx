@@ -8,7 +8,7 @@ import Answer from './Answer'
 import Loader from './Loader'
 
 const Home = () => {
-  const topQuestions = useTopQuestions({ book_id: 2 })
+  const topQuestions = useTopQuestions({ book_id: 1 })
   const askQuestion = useAskQuestion()
 
   const [query, setQuery] = useState(CONSTANTS.initialQuestion)
@@ -29,7 +29,7 @@ const Home = () => {
     answerVisible.current = true
     const question = new FormData(form.current).get('question')
     askQuestion.mutate(
-      { query: question, book_id: 2 },
+      { query: question, book_id: 1 },
       {
         onSuccess: (data) => {
           answer.current = data.data.answer
