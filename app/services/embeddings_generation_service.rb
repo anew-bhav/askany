@@ -5,26 +5,37 @@ class EmbeddingsGenerationService
   end
 
   def call
-    reader = PDF::Reader.new(@book.file.download)
-
-    page_data = JSON.parse(@book.embeddings || "[]")
-
-    reader.pages.each do |page|
-      if page_data.size > 0 && page.number <= page_data.size
-        next
+    @page_data = JSON.parse(@book.embeddings || "[]")
+    if @book.content_type == 'pdf'
+      reader = PDF::Reader.new(@book.file.download)
+      reader.pages.each do |page|
+        if page_data.size > 0 && page.number <= page_data.size
+          next
+        end
+        data = {}
+        content = clean_page(page.text)
+        data[:title] = "Page #{page.number}"
+        data[:content] = content
+        embeddings, token_count = get_page_embeddings(content)
+        data[:embeddings] = embeddings
+        data[:token_count] = token_count
+        @page_data.push(data)
       end
-      data = {}
-      content = clean_page(page.text)
-      data[:title] = "Page #{page.number}"
-      data[:content] = content
-      embeddings, token_count = get_page_embeddings(content)
-      data[:embeddings] = embeddings
-      data[:token_count] = token_count
-      page_data.push(data)
+    else
+      @book.file_content.each_with_index do |page, index|
+        data = {}
+        content = clean_page(page)
+        data[:title] = "Page #{index+1}"
+        data[:content] = content
+        embeddings, token_count = get_page_embeddings(content)
+        data[:embeddings] = embeddings
+        data[:token_count] = token_count
+        @page_data.push(data)
+      end
     end
-    { success: true, data: page_data.to_json }
+    { success: true, data: @page_data.to_json }
   rescue => e
-    { success: false, error: e.message, data: page_data.to_json }
+    { success: false, error: e.message, data: @page_data.to_json }
   end
 
   private
