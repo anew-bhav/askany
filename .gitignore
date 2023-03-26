@@ -30,6 +30,7 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+/config/development.key
 
 /app/assets/builds/*
 !/app/assets/builds/.keep

@@ -70,6 +70,9 @@ GEM
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
     afm (0.2.2)
+    annotate (3.2.0)
+      activerecord (>= 3.2, < 8.0)
+      rake (>= 10.4, < 14.0)
     aws-eventstream (1.2.0)
     aws-partitions (1.714.0)
     aws-sdk-core (3.170.0)
@@ -236,8 +239,8 @@ GEM
       rspec-mocks (~> 3.11)
       rspec-support (~> 3.11)
     rspec-support (3.12.0)
-    ruby-openai (3.0.3)
-      httparty (>= 0.18.1, < 0.22.0)
+    ruby-openai (3.7.0)
+      httparty (>= 0.18.1)
     ruby-rc4 (0.1.5)
     shrine (3.4.0)
       content_disposition (~> 1.0)
@@ -284,6 +287,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  annotate (~> 3.2)
   aws-sdk-s3 (~> 1.119)
   bootsnap
   cssbundling-rails
@@ -304,7 +308,7 @@ DEPENDENCIES
   rails-controller-testing (~> 1.0)
   redis (~> 4.0)
   rspec-rails (~> 6.0)
-  ruby-openai (~> 3.0)
+  ruby-openai (~> 3.7)
   shrine (~> 3.4)
   sidekiq (< 7.0)
   simplecov (~> 0.22.0)

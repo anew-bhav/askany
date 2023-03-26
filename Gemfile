@@ -15,7 +15,7 @@ gem "cssbundling-rails"
 gem "jbuilder"
 gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 gem "bootsnap", require: false
-gem "ruby-openai", "~> 3.0"
+gem "ruby-openai", "~> 3.7"
 gem "pdf-reader", "~> 2.11"
 gem "matrix", "~> 0.4.2"
 gem "shrine", "~> 3.4"
@@ -40,3 +40,4 @@ group :development do
   gem "redis", "~> 4.0"
 end
 
+gem "annotate", "~> 3.2"
